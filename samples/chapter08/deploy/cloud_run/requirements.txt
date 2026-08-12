@@ -1,0 +1,9 @@
+# samples/chapter08/deploy/cloud_run/requirements.txt
+# Cloud Run用HTTPサーバーの依存パッケージ
+google-adk[gcp]==2.2.0
+fastapi>=0.115.0
+uvicorn>=0.30.0
+# DatabaseSessionService（PostgreSQL）用ドライバ
+sqlalchemy>=2.0.0
+asyncpg>=0.29.0
+greenlet>=3.0.0

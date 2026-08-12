@@ -1,0 +1,23 @@
+# samples/chapter06/tools-firestore.yaml
+kind: source
+name: my-firestore
+type: firestore
+project: ${GOOGLE_CLOUD_PROJECT}
+---
+kind: tool
+name: query_collection
+type: firestore-query-collection
+source: my-firestore
+description: 指定コレクションに対してクエリを実行する
+---
+kind: tool
+name: get_documents
+type: firestore-get-documents
+source: my-firestore
+description: ドキュメントIDを指定してドキュメントを取得する
+---
+kind: tool
+name: add_documents
+type: firestore-add-documents
+source: my-firestore
+description: コレクションにドキュメントを追加する

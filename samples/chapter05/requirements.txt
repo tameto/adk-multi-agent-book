@@ -1,0 +1,8 @@
+google-adk[eval]==2.2.0
+# ガードレールのユニットテスト（tests/）の実行に必要
+pytest>=8.0.0
+# 以下は発展サンプルの実行時のみ必要
+# guardrails/dlp_guardrail.py（5-4-5）
+google-cloud-dlp>=3.0.0
+# hitl/async_approval.py（5-5-4）、hitl/dashboard_data.py（5-5-7）
+google-cloud-firestore>=2.0.0

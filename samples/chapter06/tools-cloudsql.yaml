@@ -1,0 +1,16 @@
+# samples/chapter06/tools-cloudsql.yaml
+kind: source
+name: my-pg
+type: cloud-sql-postgres
+project: ${GOOGLE_CLOUD_PROJECT}
+region: us-central1
+instance: my-instance
+database: mydb
+user: app-user
+password: ${DB_PASSWORD}
+---
+kind: tool
+name: execute_query
+type: postgres-execute-sql
+source: my-pg
+description: Cloud SQL (PostgreSQL) にSQLクエリを実行する

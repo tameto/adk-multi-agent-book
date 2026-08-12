@@ -1,0 +1,39 @@
+# 5-1-8. CI/CDパイプラインへの統合
+# 紙面の掲載パス: .github/workflows/agent-eval.yml
+# （実際に使う場合はリポジトリ直下の .github/workflows/ に配置する）
+name: Agent Evaluation
+
+on:
+  pull_request:
+    paths:
+      - 'my_agent/**'
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install "google-adk[eval]==2.2.0"
+          pip install -r requirements.txt
+
+      - name: Run evaluation
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: |
+          mkdir -p eval_results
+          adk eval my_agent \
+            eval_sets/basic.json \
+            eval_sets/safety.json \
+            --config_file_path=eval_config.json \
+            | tee eval_results/output.log
+
+      - name: Check thresholds
+        run: python scripts/check_eval_thresholds.py eval_results/

@@ -1,0 +1,23 @@
+# samples/chapter06/tools.yaml（BigQuery用）
+kind: source
+name: my-bq
+type: bigquery
+project: ${GOOGLE_CLOUD_PROJECT}
+---
+kind: tool
+name: get_dataset_info
+type: bigquery-get-dataset-info
+source: my-bq
+description: データセットのメタデータを取得する
+---
+kind: tool
+name: get_table_info
+type: bigquery-get-table-info
+source: my-bq
+description: テーブルのスキーマ情報を取得する
+---
+kind: tool
+name: execute_query
+type: bigquery-execute-sql
+source: my-bq
+description: BigQuery SQLクエリを実行する

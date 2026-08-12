@@ -1,0 +1,1 @@
+google-adk[eval]==2.2.0

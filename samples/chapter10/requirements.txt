@@ -1,0 +1,5 @@
+google-adk[gcp]==2.2.0
+google-cloud-logging>=3.10.0
+google-cloud-secret-manager>=2.20.0
+google-genai>=2.4,<3
+PyJWT[crypto]>=2.8.0

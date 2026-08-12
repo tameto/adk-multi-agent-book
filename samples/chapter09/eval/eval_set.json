@@ -1,0 +1,85 @@
+{
+  "eval_set_id": "design_review_eval",
+  "name": "Design Review Agent Regression",
+  "description": "設計レビューエージェントがレビュー対象ごとの主要指摘を返すかを検証する評価セット",
+  "eval_cases": [
+    {
+      "eval_id": "normal_design_review",
+      "conversation": [
+        {
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "samples/chapter09/design_review/agent.py をレビューしてください"
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "# 設計レビューレポート サマリー SequentialAgent code_analyzer design_reviewer report_generator A-1 単一責任 適合 A-3 ツール数 適合 A-6 Instruction長 S-2 before_model_callback S-4 os.environ S-6 before_tool_callback O-1 logging OpenTelemetry O-2 エラーハンドリング C-1 gemini-3.5-flash Q-1 eval_set.json Q-2 古い例 改善提案"
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": []
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "too_many_tools_review",
+      "conversation": [
+        {
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "samples/chapter09/eval/test_target_bad.py をレビューしてください"
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "# 設計レビューレポート A-1 A-2 A-3 ツール数 12個 swiss_army_agent S-1 Docstring S-2 S-4 S-6 before_model_callback before_tool_callback O-1 logging OpenTelemetry C-1 gemini-3.5-flash Q-1 eval_set.json 改善提案 エージェントの分割 Delegate Agent"
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": []
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "missing_security_callbacks_review",
+      "conversation": [
+        {
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "samples/chapter09/eval/test_target_insecure.py をレビューしてください"
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "# 設計レビューレポート S-6 権限制御 before_tool_callback execute_sql delete_file S-2 入力検証 before_model_callback S-4 認証情報 os.environ O-1 可観測性 logging OpenTelemetry Q-1 品質 評価データ eval_set.json 改善提案"
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": []
+          }
+        }
+      ]
+    }
+  ]
+}

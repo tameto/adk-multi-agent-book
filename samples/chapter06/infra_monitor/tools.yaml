@@ -1,0 +1,22 @@
+kind: source
+name: bq-logs
+type: bigquery
+project: ${GOOGLE_CLOUD_PROJECT}
+---
+kind: tool
+name: get_dataset_info
+type: bigquery-get-dataset-info
+source: bq-logs
+description: BigQueryのデータセットのメタデータを取得する
+---
+kind: tool
+name: get_table_info
+type: bigquery-get-table-info
+source: bq-logs
+description: BigQueryのテーブルスキーマを取得する
+---
+kind: tool
+name: execute_query
+type: bigquery-execute-sql
+source: bq-logs
+description: BigQueryにSQLクエリを実行する

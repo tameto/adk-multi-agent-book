@@ -1,0 +1,13 @@
+# samples/chapter06/tools-spanner.yaml
+kind: source
+name: my-spanner
+type: spanner
+project: ${GOOGLE_CLOUD_PROJECT}
+instance: my-instance
+database: my-database
+---
+kind: tool
+name: execute_query
+type: spanner-execute-sql
+source: my-spanner
+description: Spannerにクエリを実行する（読み取り専用）
