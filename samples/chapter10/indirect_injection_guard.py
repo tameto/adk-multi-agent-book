@@ -17,8 +17,10 @@ TOOL_RESULT_PATTERNS: list[re.Pattern] = [
     re.compile(r"\[INST\]", re.IGNORECASE),
     re.compile(r"<\|im_start\|>system", re.IGNORECASE),
     re.compile(
-        r"(ignore|disregard)\s+(previous|above|all)\s+"
-        r"(instructions|context)",
+        # 修飾語の繰り返しを許容し "ignore all previous instructions" も
+        # 検出する（prompt_injection_guard.py と同一パターン）
+        r"(ignore|disregard)\s+((all|previous|above|prior)\s+)+"
+        r"(instructions|rules|context)",
         re.IGNORECASE,
     ),
 ]

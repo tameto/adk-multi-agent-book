@@ -35,6 +35,7 @@ async def setup_push_notification(
 
 # Webhookエンドポイント（FastAPIの例）
 from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
@@ -51,10 +52,13 @@ async def handle_notification(request: Request):
     """A2A Push Notificationを受信する"""
     webhook_secret = get_webhook_secret()
 
-    # 認証トークンの検証
+    # 認証トークンの検証（不正なら401を返す。タプル返却はFastAPIでは
+    # ステータス200のままJSON化されるため、JSONResponseを明示する）
     auth_header = request.headers.get("Authorization", "")
     if auth_header != f"Bearer {webhook_secret}":
-        return {"error": "Unauthorized"}, 401
+        return JSONResponse(
+            status_code=401, content={"error": "Unauthorized"}
+        )
 
     body = await request.json()
     task_id = body.get("id")

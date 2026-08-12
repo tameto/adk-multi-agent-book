@@ -94,6 +94,13 @@ async def main() -> None:
             for part in event.content.parts:
                 if part.text:
                     print(f"[{event.author}] {part.text}")
+                elif part.function_call:
+                    # テキスト以外（入力要求などのツール呼び出し）も
+                    # 無出力で終了しないよう進行状況を表示する
+                    print(
+                        f"[{event.author}] "
+                        f"function_call: {part.function_call.name}"
+                    )
 
 
 if __name__ == "__main__":

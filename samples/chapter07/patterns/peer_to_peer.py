@@ -50,7 +50,9 @@ agent_card = AgentCard(
     description="データの処理・変換を行うエージェント",
     url="http://localhost:8001",
     version="1.0.0",
-    capabilities=AgentCapabilities(streaming=False),
+    # streaming=Falseだと単一POSTで多段委譲の完了を待つため
+    # a2a-sdk既定タイムアウトを超えやすい。SSEで逐次返すTrueにする
+    capabilities=AgentCapabilities(streaming=True),
     default_input_modes=["text"],
     default_output_modes=["text"],
     skills=[

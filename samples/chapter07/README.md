@@ -16,6 +16,7 @@
 | `patterns/hub_spoke.py` | Hub-Spokeパターン（RemoteA2aAgent + AgentTool） |
 | `patterns/pipeline.py` | Pipelineパターン（各ステージを独立デプロイし、SequentialAgentで接続） |
 | `patterns/peer_to_peer.py` | Peer-to-Peerパターン（サーバーでありクライアントでもあるエージェント） |
+| `patterns/stage3_server.py` | 3台目のA2Aサーバー（レポート生成・ポート8003）。3台構成のパターン実行用 |
 | `auth/oauth2_client.py` | AuthInterceptorによるBearerトークンの注入と401時の再試行 |
 | `auth/oauth2_server.py` | Starletteミドルウェアによるトークン検証とスコープ確認 |
 | `push_notification.py` | `set_task_callback()`によるWebhook登録と受信 |
@@ -68,7 +69,16 @@ python streaming_client.py
 
 ## サーバーの起動が前提のサンプル
 
-`patterns/`の3ファイルは、それぞれ対応するA2Aサーバーが起動していることを前提にしています。`hub_spoke.py`と`pipeline.py`はポート8001から8003の3台、`peer_to_peer.py`はポート8002と8003の2台です。`run_servers.py`が起動するのは8001と8002の2台のため、3台構成のサンプルを試す場合は3台目を別途起動してください。`hub_spoke.py`は起動前にAgent Card URLを確認し、未起動のサーバーがあれば委譲に進まず案内を表示します。
+`patterns/`のパターン3ファイルは、それぞれ対応するA2Aサーバーが起動していることを前提にしています。`hub_spoke.py`と`pipeline.py`はポート8001から8003の3台、`peer_to_peer.py`はポート8002と8003の2台です。`run_servers.py`が起動するのは8001と8002の2台のため、3台構成で試す場合は3台目を別のターミナルで起動します。
+
+```bash
+cd samples/chapter07
+python patterns/stage3_server.py
+```
+
+`hub_spoke.py`は起動前にAgent Card URLを確認し、未起動のサーバーがあれば委譲に進まず案内を表示します。
+
+`pipeline.py`の実行時にはADK v2.2.0が`SequentialAgent`の非推奨警告（`DeprecationWarning: ... Please use Workflow instead.`）を表示します。動作には影響ありません。分岐や再開を含む本番構成はWorkflow Runtimeで表現してください（書籍7-3-2参照）。
 
 `a2ui/relay_server.py`と`a2ui/dashboard.py`もA2Aサーバーの起動が前提です。
 

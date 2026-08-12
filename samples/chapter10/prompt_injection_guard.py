@@ -17,7 +17,13 @@ import re
 INJECTION_PATTERNS: list[re.Pattern] = [
     re.compile(r"(指示|命令|ルール).*(無視|忘れ|リセット)", re.IGNORECASE),
     re.compile(r"システムプロンプト.*(表示|出力|教え)", re.IGNORECASE),
-    re.compile(r"ignore\s+(all\s+)?(previous|above)\s+(instructions|rules)", re.IGNORECASE),
+    re.compile(
+        # 修飾語の繰り返しを許容する（indirect_injection_guard.py と
+        # 同一パターン。disregard系の言い換えも検出する）
+        r"(ignore|disregard)\s+((all|previous|above|prior)\s+)+"
+        r"(instructions|rules|context)",
+        re.IGNORECASE,
+    ),
     re.compile(r"you\s+are\s+now\s+a", re.IGNORECASE),
     re.compile(r"(jailbreak|DAN|bypass)", re.IGNORECASE),
 ]
