@@ -1,6 +1,5 @@
 # samples/chapter04/tests/test_inmemory_session.py
 # 4-2-1. InMemorySessionService（テストでの活用パターン）完全版
-# 紙面の掲載パス: tests/test_agent.py
 """InMemorySessionServiceで初期Stateを設定したテストのサンプル
 
 samples/chapter04/ ディレクトリからでも、リポジトリルートからでも
@@ -10,8 +9,7 @@ GCP接続は不要。
 
 補完: 紙面では文字列リテラル（"user:name" 等）でStateキーを記述しているが、
 samplesでは memory_agent/state_keys.py の定数に整合させている。
-StateKeys.APP_MAX_RESULTS の実体は "app:max_search_results"
-（紙面の "app:max_results" に対応するキー）。
+StateKeys.APP_MAX_RESULTS の実体は "app:max_search_results"。
 """
 import pytest
 import pytest_asyncio

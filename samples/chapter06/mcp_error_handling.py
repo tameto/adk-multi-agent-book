@@ -33,7 +33,7 @@ async def handle_tool_errors(
     # ファイルパスのバリデーション（パストラバーサル防止）
     if "path" in args:
         path = args["path"]
-        if ".." in path or path.startswith("/"):
+        if ".." in path:
             logger.warning(f"不正なファイルパスを検出: {path}")
             # dictを返すと実ツールをスキップしてそのdictを結果として扱う
             return {"error": "指定されたパスにはアクセスできません"}

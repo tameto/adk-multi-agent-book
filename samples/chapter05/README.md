@@ -23,10 +23,10 @@
 | `hitl/dashboard_data.py` | 承認ダッシュボードのデータ取得（発展） |
 | `hitl/agent.py`／`hitl/tools.py` | HITL対応エージェントと承認対象の業務ツール |
 | `custom_metrics.py` | ドメイン固有の数値正確性を評価するカスタムメトリクス |
-| `simulation_analysis.py` | ペルソナ評価結果の分析と改善提案の生成 |
+| `scripts/analyze_persona_results.py` | ペルソナ評価結果の分析と改善提案の生成 |
 | `scripts/eval_regression.py` | ベースラインとの比較による回帰チェック |
+| `scripts/check_eval_thresholds.py` | 評価結果の閾値チェック |
 | `ci/agent-eval.yml` | GitHub Actionsのワークフロー定義 |
-| `ci/check_eval_thresholds.py` | 評価結果の閾値チェック |
 | `tests/test_guardrails.py` | ガードレールのユニットテスト |
 
 ## セットアップ

@@ -23,7 +23,13 @@ logger = logging.getLogger(__name__)
 
 # --- プロンプトインジェクション検出パターン ---
 INJECTION_PATTERNS: list[re.Pattern] = [
-    re.compile(r"ignore\s+(all\s+)?previous\s+instructions", re.IGNORECASE),
+    re.compile(
+        # 修飾語の繰り返しを許容する（prompt_injection_guard.py と
+        # 同一パターン。disregard系の言い換えも検出する）
+        r"(ignore|disregard)\s+((all|previous|above|prior)\s+)+"
+        r"(instructions|rules|context)",
+        re.IGNORECASE,
+    ),
     re.compile(r"(指示|命令)を(すべて|全て)?無視", re.IGNORECASE),
     re.compile(r"system\s*prompt", re.IGNORECASE),
     re.compile(r"システムプロンプト", re.IGNORECASE),
@@ -36,7 +42,7 @@ INJECTION_PATTERNS: list[re.Pattern] = [
 PII_PATTERNS: list[tuple[re.Pattern, str]] = [
     (
         re.compile(
-            r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"
+            r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b"
         ),
         "[EMAIL]",
     ),
@@ -176,7 +182,12 @@ def filter_sensitive_output(
             )
 
     except Exception as e:
+        # after_model_callbackでNoneを返すと元のレスポンスがそのまま
+        # 採用されるため、例外時は固定応答に差し替えて安全側に倒す
         logger.error("after_model_callback エラー: %s", e)
+        return _make_blocked_response(
+            "一時的なエラーが発生しました。もう一度お試しください。"
+        )
 
     return None  # 変更なし: 元のレスポンスをそのまま返す
 
@@ -189,8 +200,10 @@ TOOL_RESULT_PATTERNS: list[re.Pattern] = [
     re.compile(r"\[INST\]", re.IGNORECASE),
     re.compile(r"<\|im_start\|>system", re.IGNORECASE),
     re.compile(
-        r"(ignore|disregard)\s+(previous|above|all)\s+"
-        r"(instructions|context)",
+        # 修飾語の繰り返しを許容する（indirect_injection_guard.py と
+        # 同一パターン）
+        r"(ignore|disregard)\s+((all|previous|above|prior)\s+)+"
+        r"(instructions|rules|context)",
         re.IGNORECASE,
     ),
     re.compile(r"(指示|命令)を(すべて|全て)?無視", re.IGNORECASE),
@@ -322,7 +335,9 @@ def after_tool_guard(
             return sanitized
 
     except Exception as e:
+        # after_tool_callbackでNoneを返すと元のツール結果が未検証のまま
+        # LLMに渡るため、例外時はエラーdictに差し替えて安全側に倒す
         logger.error("after_tool_callback エラー: %s", e)
-        return None
+        return {"error": "一時的なエラーが発生しました。"}
 
     return None  # 検出なし: 元のレスポンスをそのまま返す

@@ -8,7 +8,7 @@ import subprocess
 from google.adk import Agent
 
 
-# kubectlの許可コマンド（secretsは漏洩リスクが大きいため意図的に除外）
+# kubectlの許可コマンド（secretsは漏えいリスクが大きいため意図的に除外）
 ALLOWED_KUBECTL_COMMANDS = {
     "get": ["pods", "services", "deployments", "nodes", "namespaces",
             "configmaps", "ingress", "events"],

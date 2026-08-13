@@ -96,8 +96,12 @@ def main() -> None:
     )
     import_documents(corpus_name=corpus.name, paths=paths)
 
-    # 作成されたリソース名を RAG_CORPUS_ID としてエージェント起動時に渡す
-    print(f"エージェントに設定する RAG_CORPUS_ID（リソース名）: {corpus.name}")
+    # corpus.name はフルリソース名（projects/.../ragCorpora/{id}）で返る。
+    # エージェント側（memory_agent/agent.py・rag_corpora.py）は
+    # RAG_CORPUS_ID をベアIDとして受け取りフルパスを組み立てるため、
+    # 末尾のIDだけを取り出して案内する
+    rag_corpus_id = corpus.name.rsplit("/", 1)[-1]
+    print(f"エージェントに設定する RAG_CORPUS_ID（ベアID）: {rag_corpus_id}")
 
 
 if __name__ == "__main__":

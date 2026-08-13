@@ -44,24 +44,30 @@ def _resource_attr(agent_engine: object, attr: str) -> str:
 
 
 def deploy_agent(
-    project_id: str,
-    location: str,
-    staging_bucket: str,
-    display_name: str = "customer-support-agent",
+    display_name: str,
+    requirements: list[str] | None = None,
     env_vars: dict[str, str] | None = None,
 ) -> str:
     """エージェントをAgent Engineにデプロイする
 
+    プロジェクト・リージョン・ステージングバケットは環境変数から解決する。
+
     Args:
-        project_id: Google CloudプロジェクトID
-        location: デプロイ先リージョン
-        staging_bucket: ステージング用のGCSバケット（例: "gs://my-bucket"）
         display_name: デプロイ名
+        requirements: 依存パッケージ一覧（省略時は既定値を使用）
         env_vars: Agent Runtimeへ渡す環境変数
 
     Returns:
         デプロイされたリソースの完全リソース名
     """
+    project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
+    location = os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1")
+    staging_bucket = os.environ.get("STAGING_BUCKET")
+    if not project_id or not staging_bucket:
+        raise RuntimeError(
+            "環境変数 GOOGLE_CLOUD_PROJECT と STAGING_BUCKET を設定してください。"
+        )
+
     # Vertex AI SDKクライアントの初期化（本書はgoogle-cloud-aiplatform 1.153.1で検証）
     client = vertexai.Client(project=project_id, location=location)
 
@@ -73,7 +79,8 @@ def deploy_agent(
     app = agent_engines.AdkApp(agent=root_agent)
     config: dict = {
         "display_name": display_name,
-        "requirements": AGENT_ENGINE_REQUIREMENTS,
+        "requirements": requirements or AGENT_ENGINE_REQUIREMENTS,
+        "extra_packages": [],  # 追加パッケージ（.whlファイル等）
         "env_vars": {
             "GOOGLE_CLOUD_AGENT_ENGINE_ENABLE_TELEMETRY": "true",
             "OTEL_SEMCONV_STABILITY_OPT_IN": "gen_ai_latest_experimental",

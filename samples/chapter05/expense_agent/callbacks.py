@@ -1,12 +1,14 @@
 # samples/chapter05/expense_agent/callbacks.py
 """経費精算エージェントのコールバック（ガードレール・HITL）
 
-- before_model_callback: プロンプトインジェクション検出（入力ガードレール）
+- before_model_callback: プロンプトインジェクション検出（入力ガードレール）と
+  HITL承認入力の処理
 - after_model_callback: PII漏えい防止（出力ガードレール）
 - before_tool_callback: 高額経費のHITL承認フロー
 """
 
 import re
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from google.adk.agents.callback_context import CallbackContext
@@ -116,6 +118,16 @@ def output_guardrail(
 # HITL承認が必要な金額閾値（円）
 HITL_THRESHOLD = 500_000
 
+# 承認待ちの有効期限（24時間）
+HITL_APPROVAL_TIMEOUT = timedelta(hours=24)
+
+# 承認待ちの金額と受付時刻を保持するStateキー
+PENDING_AMOUNT_KEY = "_pending_hitl_amount"
+PENDING_REQUESTED_AT_KEY = "_pending_hitl_requested_at"
+
+# ユーザーの承認を表す入力
+APPROVAL_PHRASE = "承認します"
+
 
 def hitl_approval_callback(
     tool: BaseTool,
@@ -144,7 +156,14 @@ def hitl_approval_callback(
     # 既に承認済みかチェック（Stateに承認フラグがある場合）
     approval_key = f"_hitl_approved_{amount}"
     if tool_context.state.get(approval_key):
+        # 承認は1回限り有効。フラグを落としてからツール実行を許可する
+        tool_context.state[approval_key] = False
         return None
+
+    # 承認待ちの金額と受付時刻をStateに記録する
+    # （handle_hitl_approval_input が承認入力の照合に使う）
+    tool_context.state[PENDING_AMOUNT_KEY] = amount
+    tool_context.state[PENDING_REQUESTED_AT_KEY] = _now().isoformat()
 
     # 承認リクエストを返す（ツール実行をブロック）
     return {
@@ -153,10 +172,49 @@ def hitl_approval_callback(
             f"高額経費の申請です（{amount:,}円）。承認が必要です。\n"
             f"カテゴリ: {args.get('category', '未指定')}\n"
             f"説明: {args.get('description', '未指定')}\n"
-            f"承認する場合は「承認します」と入力してください。"
+            f"承認する場合は「{APPROVAL_PHRASE}」と入力してください。"
         ),
         "amount": amount,
     }
+
+
+def handle_hitl_approval_input(
+    callback_context: CallbackContext,
+    llm_request: LlmRequest,
+) -> Optional[LlmResponse]:
+    """ユーザーの承認入力を処理するコールバック
+
+    承認待ちの経費申請がある状態で「承認します」と入力されたら、
+    Stateに承認フラグを立ててLLM呼び出しをスキップする。
+    受付から24時間を過ぎた承認リクエストは期限切れとして無効化する。
+
+    Returns:
+        None: 承認待ちなし、または承認入力ではない（LLMに処理を委譲）
+        LlmResponse: 承認・期限切れを通知する応答（LLMをスキップ）
+    """
+    amount = callback_context.state.get(PENDING_AMOUNT_KEY)
+    if not amount:
+        return None
+
+    last_message = _get_last_user_message(llm_request)
+    if not last_message or APPROVAL_PHRASE not in last_message:
+        return None
+
+    # 承認待ちの有効期限を確認する
+    if _is_expired(callback_context.state.get(PENDING_REQUESTED_AT_KEY)):
+        _clear_pending(callback_context)
+        return _create_response(
+            f"承認待ちの申請（{amount:,}円）は受付から24時間を過ぎたため"
+            "無効になりました。もう一度申請してください。"
+        )
+
+    callback_context.state[f"_hitl_approved_{amount}"] = True
+    _clear_pending(callback_context)
+
+    return _create_response(
+        "承認されました。続けて申請内容を送信すると"
+        f"{amount:,}円の経費を登録します。"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -175,6 +233,31 @@ def _get_last_user_message(
                 if part.text:
                     return part.text
     return None
+
+
+def _now() -> datetime:
+    """現在時刻をUTCで返す（承認待ちの期限判定に使う）"""
+    return datetime.now(timezone.utc)
+
+
+def _is_expired(requested_at: Optional[str]) -> bool:
+    """承認リクエストの受付時刻が有効期限を過ぎているか判定する"""
+    if not requested_at:
+        # 受付時刻が記録されていない場合は期限切れ扱いにしない
+        return False
+    try:
+        requested = datetime.fromisoformat(requested_at)
+    except ValueError:
+        return False
+    if requested.tzinfo is None:
+        requested = requested.replace(tzinfo=timezone.utc)
+    return _now() - requested > HITL_APPROVAL_TIMEOUT
+
+
+def _clear_pending(callback_context: CallbackContext) -> None:
+    """承認待ちの状態をクリアする"""
+    callback_context.state[PENDING_AMOUNT_KEY] = None
+    callback_context.state[PENDING_REQUESTED_AT_KEY] = None
 
 
 def _detect_injection(text: str) -> bool:

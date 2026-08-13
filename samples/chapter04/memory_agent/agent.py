@@ -103,7 +103,7 @@ app = App(
     root_agent=root_agent,
     events_compaction_config=EventsCompactionConfig(
         compaction_interval=20,   # 20 invocation ごとにCompactionを実行
-        overlap_size=2,           # 直前の2 invocationを要約に含めて保持
+        overlap_size=2,           # 前回の要約範囲末尾から2 invocation重複
         summarizer=LlmEventSummarizer(
             llm=Gemini(model="gemini-3.5-flash"),
         ),

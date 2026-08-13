@@ -1,0 +1,3 @@
+google-adk[gcp,otel-gcp]==2.2.0
+google-cloud-aiplatform[agent-engines]==1.153.1
+opentelemetry-exporter-otlp-proto-http==1.41.1

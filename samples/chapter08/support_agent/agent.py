@@ -25,7 +25,14 @@ class StructuredFormatter(logging.Formatter):
             "component": record.name,
         }
         # カスタム属性の追加
-        for attr in ("agent_name", "session_id", "user_id"):
+        for attr in (
+            "agent_name",
+            "session_id",
+            "user_id",
+            "event",
+            "reason",
+            "tool_name",
+        ):
             if hasattr(record, attr):
                 log_entry[attr] = getattr(record, attr)
         return json.dumps(log_entry, ensure_ascii=False)

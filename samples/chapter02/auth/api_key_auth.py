@@ -6,13 +6,9 @@
 import os
 
 from google.adk.tools import FunctionTool
-from google.adk.tools.tool_context import ToolContext
 
 
-def call_weather_api(
-    city: str,
-    tool_context: ToolContext,
-) -> dict:
+def call_weather_api(city: str) -> dict:
     """外部Weather APIを呼び出して天気情報を取得する。
 
     Args:

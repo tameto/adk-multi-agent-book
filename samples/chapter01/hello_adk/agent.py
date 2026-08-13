@@ -27,22 +27,23 @@ def get_weather(city: str) -> dict:
     """
     # ダミーの天気データ（本番ではOpenWeatherMap等のAPIを呼び出す）
     weather_data = {
-        "東京": {"temp": 22, "condition": "晴れ", "humidity": 45},
-        "大阪": {"temp": 24, "condition": "曇り", "humidity": 60},
-        "福岡": {"temp": 26, "condition": "晴れ", "humidity": 55},
-        "札幌": {"temp": 15, "condition": "雨", "humidity": 75},
+        "東京": {"temperature": 22, "condition": "晴れ", "humidity": 45},
+        "大阪": {"temperature": 24, "condition": "曇り", "humidity": 60},
+        "福岡": {"temperature": 26, "condition": "晴れ", "humidity": 55},
+        "札幌": {"temperature": 15, "condition": "雨", "humidity": 75},
     }
 
     if city in weather_data:
         data = weather_data[city]
         return {
+            "status": "success",
             "city": city,
-            "temp_c": data["temp"],
+            "temperature": data["temperature"],
             "condition": data["condition"],
-            "humidity_pct": data["humidity"],
+            "humidity": data["humidity"],
         }
 
-    return {"city": city, "error": f"{city}の天気データは見つかりませんでした"}
+    return {"status": "error", "message": f"{city}の天気情報は見つかりませんでした"}
 
 
 def get_sightseeing(city: str) -> dict:
@@ -56,21 +57,34 @@ def get_sightseeing(city: str) -> dict:
     """
     # ダミーの観光データ（本番では観光情報APIやRAGを利用する）
     sightseeing_data = {
-        "東京": {"spots": ["浅草寺", "東京タワー", "明治神宮"], "season": "春（桜の季節）"},
-        "大阪": {"spots": ["大阪城", "道頓堀", "通天閣"], "season": "秋（紅葉の季節）"},
-        "福岡": {"spots": ["太宰府天満宮", "福岡タワー", "櫛田神社"], "season": "春（梅の季節）"},
-        "札幌": {"spots": ["大通公園", "時計台", "藻岩山"], "season": "冬（雪まつりの季節）"},
+        "東京": {
+            "spots": ["浅草寺", "東京タワー", "明治神宮"],
+            "recommended_season": "春（桜の季節）",
+        },
+        "大阪": {
+            "spots": ["大阪城", "道頓堀", "通天閣"],
+            "recommended_season": "秋（紅葉の季節）",
+        },
+        "福岡": {
+            "spots": ["太宰府天満宮", "福岡タワー", "櫛田神社"],
+            "recommended_season": "春（梅の季節）",
+        },
+        "札幌": {
+            "spots": ["大通公園", "時計台", "藻岩山"],
+            "recommended_season": "冬（雪まつりの季節）",
+        },
     }
 
     if city in sightseeing_data:
         data = sightseeing_data[city]
         return {
+            "status": "success",
             "city": city,
             "spots": data["spots"],
-            "recommended_season": data["season"],
+            "recommended_season": data["recommended_season"],
         }
 
-    return {"city": city, "error": f"{city}の観光情報は見つかりませんでした"}
+    return {"status": "error", "message": f"{city}の観光情報は見つかりませんでした"}
 
 
 # エージェント定義

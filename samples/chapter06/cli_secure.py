@@ -32,10 +32,7 @@ def safe_gcloud(subcommand: str, resource_name: str = "", flags: str = "") -> di
         コマンドの実行結果"""
     # サブコマンドのホワイトリスト検証
     if subcommand not in ALLOWED_GCLOUD_SUBCOMMANDS:
-        return {
-            "error": f"許可されていないサブコマンドです: {subcommand}",
-            "allowed": list(ALLOWED_GCLOUD_SUBCOMMANDS),
-        }
+        return {"error": f"許可されていないサブコマンドです: {subcommand}"}
 
     # リソース名のバリデーション（英数字、ハイフン、アンダースコアのみ）
     if resource_name and not re.match(r'^[a-zA-Z0-9_-]+$', resource_name):

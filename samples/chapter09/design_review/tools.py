@@ -444,7 +444,7 @@ def check_design_rules(analysis_result: str) -> dict:
         findings.append({
             "category": "cost",
             "severity": "high",
-            "rule": "C-2",
+            "rule": "C-1",
             "message": "古いモデル名が使われています: "
                        f"{', '.join(legacy_models)}。"
                        "ADK v2.2.0 前提の本書サンプルでは "

@@ -28,12 +28,14 @@ jobs:
         env:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         run: |
-          mkdir -p eval_results
           adk eval my_agent \
             eval_sets/basic.json \
             eval_sets/safety.json \
-            --config_file_path=eval_config.json \
-            | tee eval_results/output.log
+            --config_file_path=eval_config.json
 
+      # adk eval は評価結果のJSONを
+      # <agent_dir>/.adk/eval_history/ に書き出す
       - name: Check thresholds
-        run: python scripts/check_eval_thresholds.py eval_results/
+        run: |
+          python scripts/check_eval_thresholds.py \
+            my_agent/.adk/eval_history
