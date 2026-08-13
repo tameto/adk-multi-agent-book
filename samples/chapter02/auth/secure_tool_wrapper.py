@@ -51,14 +51,14 @@ def secure_tool_wrapper(
 # 使用例（補完: 紙面には未掲載）
 #
 # from google.adk.tools import FunctionTool
-# from oauth2_calendar import auth_scheme, auth_credential, get_calendar_events
+# from oauth2_calendar import auth_scheme, create_auth_credential, get_calendar_events
 #
 # # 認証チェック付きツールとしてラップしてからFunctionTool化する
 # secured_get_calendar_events = secure_tool_wrapper(
 #     tool_func=get_calendar_events,
 #     required_scopes=["https://www.googleapis.com/auth/calendar.readonly"],
 #     auth_scheme=auth_scheme,
-#     auth_credential=auth_credential,
+#     auth_credential=create_auth_credential(),
 # )
 # calendar_tool = FunctionTool(func=secured_get_calendar_events)
 

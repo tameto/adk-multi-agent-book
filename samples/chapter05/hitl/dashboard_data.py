@@ -4,6 +4,7 @@
 from datetime import datetime, timedelta
 
 from google.cloud import firestore
+from google.cloud.firestore_v1.base_query import FieldFilter
 
 
 class ApprovalDashboard:
@@ -21,7 +22,7 @@ class ApprovalDashboard:
         # 過去24時間のリクエスト
         recent_docs = (
             self.collection
-            .where("created_at", ">=", last_24h)
+            .where(filter=FieldFilter("created_at", ">=", last_24h))
             .stream()
         )
 

@@ -4,6 +4,7 @@ opentelemetry-exporter-otlp-proto-http==1.41.1
 google-cloud-monitoring>=2.23.0
 google-cloud-monitoring-dashboards>=2.18.0
 google-cloud-logging>=3.11.0
+google-cloud-secret-manager>=2.20.0
 google-cloud-trace>=1.19.0
 asyncpg>=0.29.0
 greenlet>=3.0.0

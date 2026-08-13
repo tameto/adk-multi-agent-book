@@ -11,7 +11,7 @@ async def get_order_status(
     """注文の現在のステータスを取得する
 
     Args:
-        order_id: 注文ID（例: ORD-12345）
+        order_id: 注文ID。"ORD-" で始まる英数字の文字列（例: ORD-12345）
         tool_context: ADKのToolContext
 
     Returns:

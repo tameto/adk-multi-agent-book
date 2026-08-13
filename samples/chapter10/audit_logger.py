@@ -24,7 +24,7 @@ JST = timezone(timedelta(hours=9))
 
 # PIIマスキングパターン
 PII_PATTERNS = [
-    (re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"), "[EMAIL]"),
+    (re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b"), "[EMAIL]"),
     (re.compile(r"\b0[0-9]{1,4}-[0-9]{1,4}-[0-9]{4}\b"), "[PHONE]"),
     (re.compile(r"\b\d{3}-\d{4}\b"), "[ZIPCODE]"),
 ]

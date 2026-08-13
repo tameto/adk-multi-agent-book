@@ -12,7 +12,7 @@ def transfer_funds(amount: int, to_account: str) -> dict:
     """指定口座へ送金する。
 
     Args:
-        amount: 送金額（円）。10万円以上は承認が必要。
+        amount: 送金額（円）。100万円以上は承認が必要。
         to_account: 送金先の口座番号。
     """
     # デモ用のスタブ実装。実運用では決済APIを呼び出す。

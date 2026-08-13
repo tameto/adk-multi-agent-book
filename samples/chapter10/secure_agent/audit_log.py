@@ -20,7 +20,7 @@ JST = timezone(timedelta(hours=9))
 PII_PATTERNS: list[tuple[re.Pattern, str]] = [
     (
         re.compile(
-            r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"
+            r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b"
         ),
         "[EMAIL]",
     ),

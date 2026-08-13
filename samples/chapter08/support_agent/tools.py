@@ -91,12 +91,8 @@ def escalate_to_human(reason: str) -> dict:
     Args:
         reason: エスカレーションの理由
     """
-    logger.warning(
-        json.dumps(
-            {"event": "escalation", "reason": reason},
-            ensure_ascii=False,
-        )
-    )
+    # extra引数で渡した属性はStructuredFormatterがjsonPayloadに転写する
+    logger.warning("escalated", extra={"event": "escalation", "reason": reason})
     return {
         "status": "escalated",
         "message": "人間のオペレーターに転送します。しばらくお待ちください。",

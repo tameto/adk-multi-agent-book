@@ -52,7 +52,7 @@ def analyze_results(results_path: str) -> dict:
 if __name__ == "__main__":
     import sys
 
-    # 使用例: python simulation_analysis.py persona_results.json
+    # 使用例: python scripts/analyze_persona_results.py persona_results.json
     path = sys.argv[1] if len(sys.argv) > 1 else "persona_results.json"
     if Path(path).exists():
         print(json.dumps(analyze_results(path), ensure_ascii=False, indent=2))

@@ -35,7 +35,7 @@ TERMINAL_STATES = {TaskState.completed, TaskState.failed, TaskState.canceled}
 DEFAULT_FOLLOWUP_ANSWER = "2026-07-10、1,280円、品川から渋谷へのタクシー代です。"
 
 
-def _find_pending_function_call(task) -> dict[str, Any] | None:
+def find_pending_function_call(task) -> dict[str, Any] | None:
     """ADK由来の input_required に含まれる FunctionCall を取得する"""
     message = task.status.message if task and task.status else None
     if not message:
@@ -72,7 +72,7 @@ def _print_agent_message(task) -> None:
                 print(f"エージェントからの質問: {prompt}")
 
 
-def _build_function_response_part(function_call: dict[str, Any], user_input: str):
+def build_function_response_part(function_call: dict[str, Any], user_input: str):
     """ADKの FunctionCall に対応する FunctionResponse Part を作る"""
     response_part = convert_genai_part_to_a2a_part(
         genai_types.Part(
@@ -89,16 +89,17 @@ def _build_function_response_part(function_call: dict[str, Any], user_input: str
 
 
 def _read_followup_answer() -> str:
-    """対話入力または環境変数から追加回答を取得する"""
-    env_answer = os.environ.get("A2A_FOLLOWUP_ANSWER")
-    if env_answer:
-        print(f"回答: {env_answer}")
-        return env_answer
+    """対話入力または環境変数から追加回答を取得する
+
+    ターミナル実行時は input() を優先し、CI等の非対話環境では
+    環境変数 A2A_FOLLOWUP_ANSWER（未設定ならデモ回答）を使う。
+    """
     if sys.stdin.isatty():
         return input("回答: ")
 
-    print(f"回答: {DEFAULT_FOLLOWUP_ANSWER}")
-    return DEFAULT_FOLLOWUP_ANSWER
+    answer = os.environ.get("A2A_FOLLOWUP_ANSWER") or DEFAULT_FOLLOWUP_ANSWER
+    print(f"回答: {answer}")
+    return answer
 
 
 async def handle_expense_with_followup(client: Client) -> None:
@@ -115,7 +116,7 @@ async def handle_expense_with_followup(client: Client) -> None:
     # TASK_STATE_INPUT_REQUIRED の場合、追加情報を送信
     while task and task.status.state == TaskState.input_required:
         _print_agent_message(task)
-        function_call = _find_pending_function_call(task)
+        function_call = find_pending_function_call(task)
         if function_call is None:
             raise RuntimeError("input_required task に FunctionCall が含まれていません")
 
@@ -125,7 +126,7 @@ async def handle_expense_with_followup(client: Client) -> None:
         # 既存Taskに紐づけるため taskId / contextId を指定
         followup = Message(
             role=Role.user,
-            parts=[_build_function_response_part(function_call, user_input)],
+            parts=[build_function_response_part(function_call, user_input)],
             message_id=str(uuid.uuid4()),
             task_id=task.id,
             context_id=task.context_id,

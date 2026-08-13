@@ -2,7 +2,7 @@
 """3-4-8 ガードレールとしてのコールバック活用（完全版）
 
 - 入力ガードレール: プロンプトインジェクション対策（before_model_callback）
-- 出力ガードレール: PII（個人識別情報）の漏洩防止（after_model_callback）
+- 出力ガードレール: PII（個人識別情報）の漏えい防止（after_model_callback）
 - ツールガードレール: 破壊的操作の制御（before_tool_callback）
 """
 import re
@@ -62,7 +62,7 @@ def detect_prompt_injection(
     return None
 
 
-# --- 出力ガードレール: PII（個人識別情報）の漏洩防止 ---
+# --- 出力ガードレール: PII（個人識別情報）の漏えい防止 ---
 
 # PIIパターンの定義
 PII_PATTERNS = {

@@ -2,7 +2,8 @@
 """第5章 ハンズオン: 経費精算エージェント
 
 評価・ガードレール・HITLを組み込んだ経費精算エージェント。
-- before_model_callback: 入力ガードレール（プロンプトインジェクション検出）
+- before_model_callback: 入力ガードレール（プロンプトインジェクション検出）と
+  HITL承認入力の処理
 - after_model_callback: 出力ガードレール（PII漏えい防止）
 - before_tool_callback: HITL承認フロー（高額経費の承認）
 """
@@ -12,6 +13,7 @@ from google.genai.types import GenerateContentConfig
 
 try:
     from .callbacks import (
+        handle_hitl_approval_input,
         hitl_approval_callback,
         input_guardrail,
         output_guardrail,
@@ -24,6 +26,7 @@ try:
     )
 except ImportError:
     from callbacks import (
+        handle_hitl_approval_input,
         hitl_approval_callback,
         input_guardrail,
         output_guardrail,
@@ -58,7 +61,8 @@ root_agent = Agent(
 """,
     tools=[submit_expense, query_expenses, approve_expense],
     generate_content_config=GenerateContentConfig(temperature=0),
-    before_model_callback=input_guardrail,
+    # 入力ガードレールを先に通し、通過した入力だけを承認処理に渡す
+    before_model_callback=[input_guardrail, handle_hitl_approval_input],
     after_model_callback=output_guardrail,
     before_tool_callback=hitl_approval_callback,
 )

@@ -5,7 +5,7 @@ TOOL_CATALOG = {
     "bigquery": {
         "type": "mcp",
         "package": "@toolbox-sdk/server",
-        "config": "tools-bigquery.yaml",
+        "config": "tools.yaml",
         "description": "BigQueryへのクエリ実行・スキーマ参照",
         "required_iam_roles": ["roles/bigquery.dataViewer"],
         "risk_level": "medium",  # データ参照可能

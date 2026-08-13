@@ -56,12 +56,18 @@ async def migrate_sessions(
                 session_id=session.id,
             )
 
-            # 移行先にセッションを作成
-            await target.create_session(
+            # 移行先にセッションを作成（session_idをそのまま引き継ぐ）
+            target_session = await target.create_session(
                 app_name="my-agent",
                 user_id=user_id,
                 state=session_data.state,
+                session_id=session.id,
             )
+
+            # 会話履歴（events）も1件ずつ移行する
+            for event in session_data.events:
+                await target.append_event(session=target_session, event=event)
+
             migrated_count += 1
 
     print(f"移行完了: {migrated_count}セッション")

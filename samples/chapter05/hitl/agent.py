@@ -46,8 +46,8 @@ def handle_approval_input(
             content=types.Content(
                 parts=[
                     types.Part(
-                        text=f"承認されました。"
-                        f"{tool_name}を実行します。"
+                        text=f"承認されました。続けて"
+                        f"依頼を送信すると{tool_name}を実行します。"
                     )
                 ],
                 role="model",

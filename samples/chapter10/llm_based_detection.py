@@ -20,16 +20,14 @@ async def llm_based_injection_check(user_input: str) -> bool:
 
     response = await client.aio.models.generate_content(
         model="gemini-3.5-flash",
-        contents=[
-            types.Content(
-                role="user",
-                parts=[types.Part(text=f"判定対象の入力:\n{user_input}")],
-            )
-        ],
+        contents=f"判定対象の入力:\n{user_input}",
         config=types.GenerateContentConfig(
             system_instruction=CLASSIFIER_INSTRUCTION,
             temperature=0.0,  # 決定的な出力にする
             max_output_tokens=10,
+            # thinkingモデルでは思考トークンもmax_output_tokensを消費する
+            # ため、思考を無効化して分類結果の1語だけを返させる
+            thinking_config=types.ThinkingConfig(thinking_budget=0),
         ),
     )
 

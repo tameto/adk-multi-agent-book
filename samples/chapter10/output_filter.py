@@ -7,7 +7,7 @@ import re
 
 # 機密情報パターン（出力に含まれてはならない）
 SENSITIVE_PATTERNS: list[re.Pattern] = [
-    re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"),  # メールアドレス
+    re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b"),  # メールアドレス
     re.compile(r"\b0[0-9]{1,4}-[0-9]{1,4}-[0-9]{4}\b"),  # 電話番号（日本）
     re.compile(r"\b\d{3}-\d{4}\b"),  # 郵便番号
     re.compile(r"(AIza[0-9A-Za-z_-]{35})"),  # Google APIキー
