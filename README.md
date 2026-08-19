@@ -43,6 +43,17 @@ adk --version
 
 各章のディレクトリにREADMEを置いています。収録ファイルの一覧と実行方法はそちらを参照してください。
 
+## 付録・補助ドキュメント
+
+`docs/`に書籍付録のオンライン版と、刊行後の変更・正誤を追跡する補助ドキュメントを置いています。
+
+| ドキュメント | 内容 |
+|---|---|
+| [付録A ADK CLIリファレンス](docs/adk-cli-reference.md) | `adk create`から`adk deploy`までの主要サブコマンドのオプション一覧・使用例・逆引きリファレンス |
+| [付録B 参考文献](docs/references.md) | 本書が参照した公式ドキュメント・標準規格・書籍を章別に整理したリンク集 |
+| [新旧名称対照ガイド](docs/name-changes.md) | Google Cloud・ADK・A2A・MCPの名称変更・非推奨化の対照表。名称変更があり次第更新 |
+| [正誤表](docs/errata.md) | 書籍・サンプルコードの正誤情報 |
+
 ## セットアップ
 
 ### 1. リポジトリの取得
@@ -134,14 +145,14 @@ gcloud services enable aiplatform.googleapis.com
 | 章 | 課金対象のサービス |
 |---|---|
 | 第4章 | Vertex AI Memory Bank、Vertex AI RAG Engine、Cloud SQL（DatabaseSessionService利用時） |
-| 第5章 | Cloud DLP、Firestore（発展サンプルのみ） |
+| 第5章 | Cloud DLP、Firestore（いずれも発展サンプルのみ） |
 | 第6章 | BigQuery、Cloud SQL、Spanner、Firestore（MCP Toolbox接続時） |
 | 第8章 | Vertex AI Agent Engine、Cloud Run／GKE、Cloud Monitoring、Cloud Trace |
 | 第10章 | Cloud Logging、Secret Manager |
 
 実行にかかる費用はモデル呼び出し回数とGoogle Cloudサービスの利用量に応じて変わります。課金状況はGoogle Cloud Consoleの「お支払い」ページで確認してください。
 
-第1章から第3章、第7章、第9章のサンプルはAPIキーだけで動きます。第7章のA2A通信もローカルプロセス間で完結するため、Google Cloudプロジェクトは不要です。
+第1章から第3章、第7章、第9章のサンプルは、第2章と第7章の`auth/`配下のサンプル（追加の認証設定が必要。各章のREADMEを参照）を除き、APIキーだけで動きます。第7章のA2A通信もローカルプロセス間で完結するため、Google Cloudプロジェクトは不要です。
 
 ### うまく動かないとき
 
@@ -155,7 +166,7 @@ gcloud services enable aiplatform.googleapis.com
 
 ## 正誤・質問
 
-誤りや改善点に気づいたら、Issueやプルリクエストで知らせてください。コードの不具合、環境依存の再現手順、本文との食い違いなど、どれも歓迎します。
+確認済みの正誤情報は[正誤表](docs/errata.md)に掲載しています。誤りや改善点に気づいたら、Issueやプルリクエストで知らせてください。コードの不具合、環境依存の再現手順、本文との食い違いなど、どれも歓迎します。
 
 ADKやA2Aの仕様変更でサンプルが動かなくなった場合も、Issueで報告していただけると助かります。報告の際は、`adk --version`の出力、Pythonのバージョン、エラーメッセージの全文を添えてください。
 
@@ -173,4 +184,4 @@ You may obtain a copy of the License at
     http://www.apache.org/licenses/LICENSE-2.0
 ```
 
-書籍の本文・図表は著作権の対象であり、このライセンスの範囲には含まれません。
+書籍の本文・図表は著作権の対象であり、このライセンスの範囲には含まれません。`docs/`配下の付録A・付録Bのページ（付録Aの掲載図版を含む）は書籍からの転載であり、同様にApache License 2.0の対象外です。`docs/`のその他のページ（新旧名称対照ガイド・正誤表）はこのリポジトリのための書き下ろしで、Apache License 2.0の対象です。
